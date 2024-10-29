@@ -25,6 +25,27 @@
       <!-- Camera -->
       <a-camera position="0 1.6 3"></a-camera>
     </a-scene>
+    
+    <script>
+      // Controlla se il modello si carica correttamente
+      AFRAME.registerComponent('model-loader', {
+        init: function () {
+          const el = this.el;
+
+          el.addEventListener('model-loaded', () => {
+            console.log('Modello caricato correttamente');
+          });
+
+          el.addEventListener('model-error', (err) => {
+            console.error('Errore nel caricamento del modello:', err);
+          });
+        }
+      });
+
+      // Aggiungi il componente al modello
+      const modelEntity = document.querySelector('a-entity[gltf-model]');
+      modelEntity.setAttribute('model-loader', '');
+    </script>
   </body>
 </html>
 
