@@ -1,51 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>3D Model Viewer</title>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-  </head>
-  <body>
-    <a-scene>
-      <!-- Terreno -->
-      <a-plane rotation="-90 0 0" width="20" height="20" color="#7BC8A4"></a-plane>
-
-      <!-- Luce -->
-      <a-light type="ambient" color="#445451"></a-light>
-      <a-light type="directional" intensity="0.6" position="-1 2 1"></a-light>
-
-      <!-- Modello 3D importato -->
-      <a-entity 
-        gltf-model="https://shorturl.at/jTXQ5" 
-        scale="1 1 1" 
-        position="0 0.5 0">
-      </a-entity>
-
-      <!-- Camera -->
-      <a-camera position="0 1.6 3"></a-camera>
-    </a-scene>
-    
-    <script>
-      // Controlla se il modello si carica correttamente
-      AFRAME.registerComponent('model-loader', {
-        init: function () {
-          const el = this.el;
-
-          el.addEventListener('model-loaded', () => {
-            console.log('Modello caricato correttamente');
-          });
-
-          el.addEventListener('model-error', (err) => {
-            console.error('Errore nel caricamento del modello:', err);
-          });
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <style>
+        /* Assicurati che il modello riempia lo schermo */
+        body {
+            margin: 0;
+            overflow: hidden;
         }
-      });
-
-      // Aggiungi il componente al modello
-      const modelEntity = document.querySelector('a-entity[gltf-model]');
-      modelEntity.setAttribute('model-loader', '');
-    </script>
-  </body>
+        model-viewer {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Componente model-viewer -->
+    <model-viewer 
+        src="https://dl.dropboxusercontent.com/s/o891cbkdno2pj1dhuw03s/Collezione_3d-giusto.glb" 
+        ar 
+        ar-modes="webxr scene-viewer quick-look" 
+        camera-controls 
+        tone-mapping="neutral" 
+        poster="poster.webp" 
+        shadow-intensity="1">
+    </model-viewer>
+</body>
 </html>
-
