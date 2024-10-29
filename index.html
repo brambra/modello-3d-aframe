@@ -15,9 +15,28 @@
             width: 100%;
             height: 100%;
         }
-        #ar-prompt {
+        /* Stile per la barra di progresso */
+        .progress-bar {
             position: absolute;
             bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            display: flex;
+            visibility: hidden; /* Nasconde di default */
+        }
+        .update-bar {
+            height: 100%;
+            background: #76c7c0;
+            width: 0%; /* Inizialmente zero */
+            border-radius: 5px;
+        }
+        #ar-prompt {
+            position: absolute;
+            bottom: 50px;
             left: 50%;
             transform: translateX(-50%);
             display: none; /* Nasconde il prompt di default */
@@ -30,10 +49,15 @@
     <model-viewer 
         src="https://dl.dropboxusercontent.com/s/o891cbkdno2pj1dhuw03s/Collezione_3d-giusto.glb" 
         ar 
-        ar-modes="webxr scene-viewer quick-look" 
+        ar-modes="scene-viewer webxr quick-look" 
         camera-controls 
         tone-mapping="neutral" 
         shadow-intensity="1">
+        
+        <!-- Barra di progresso -->
+        <div class="progress-bar hide" slot="progress-bar">
+            <div class="update-bar"></div>
+        </div>
         
         <!-- Pulsante AR -->
         <button slot="ar-button" id="ar-button">
@@ -47,19 +71,22 @@
     </model-viewer>
 
     <script>
-        // Mostra il prompt AR se il dispositivo supporta AR
         const modelViewer = document.querySelector('model-viewer');
+        const progressBar = document.querySelector('.progress-bar');
+        const updateBar = document.querySelector('.update-bar');
         const arPrompt = document.getElementById('ar-prompt');
 
-        modelViewer.addEventListener('ar-status', (event) => {
-            if (event.detail.status === 'not-available') {
-                arPrompt.style.display = 'none';
-            } else if (event.detail.status === 'session-started') {
-                arPrompt.style.display = 'none'; // Nasconde il prompt quando inizia la sessione AR
-            } else {
-                arPrompt.style.display = 'block'; // Mostra il prompt quando AR è disponibile
-            }
+        // Mostra la barra di progresso durante il caricamento
+        modelViewer.addEventListener('load', () => {
+            progressBar.style.visibility = 'hidden'; // Nasconde la barra di progresso quando il modello è caricato
         });
 
-        // Mostra il prompt AR solo se disponibile
-        modelViewer.addEventListener('load', () => {
+        modelViewer.addEventListener('progress', (event) => {
+            progressBar.style.visibility = 'visible'; // Mostra la barra di progresso durante il caricamento
+            const progress = (event.detail.totalLoaded / event.detail.total) * 100;
+            updateBar.style.width = `${progress}%`;
+        });
+
+        // Gestisci il prompt AR
+        modelViewer.addEventListener('ar-status', (event) => {
+   
